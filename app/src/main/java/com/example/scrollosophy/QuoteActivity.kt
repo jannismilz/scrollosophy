@@ -51,23 +51,23 @@ import kotlin.coroutines.resumeWithException
 import kotlin.random.Random
 
 class QuoteActivity : ComponentActivity() {
-    private lateinit var cronetEngine: CronetEngine
+    private lateinit var quoteRepository: QuoteRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val quote = intent.getStringExtra("quote") ?: "No quote available"
         val author = intent.getStringExtra("author") ?: "Unknown"
 
-        cronetEngine = CronetEngine.Builder(applicationContext).build()
+        quoteRepository = QuoteRepository(applicationContext)
 
         setContent {
-            QuoteScreen(quote, author, cronetEngine)
+            QuoteScreen(quote, author, quoteRepository)
         }
     }
 }
 
 @Composable
-fun QuoteScreen(quote: String, author: String, cronetEngine: CronetEngine) {
+fun QuoteScreen(quote: String, author: String, quoteRepository: QuoteRepository) {
     val quotes = remember { mutableStateListOf(Quote(quote, author)) }
     val listState = rememberLazyListState()
 
@@ -77,8 +77,8 @@ fun QuoteScreen(quote: String, author: String, cronetEngine: CronetEngine) {
         if (listState.firstVisibleItemIndex == quotes.size - 1 && !isLoading) {
             isLoading = true
             try {
-                val fetchedQuote = fetchQuote(cronetEngine)
-                quotes.add(fetchedQuote) // Add the new quote to the list
+                val fetchedQuote = quoteRepository.fetchQuote()
+                quotes.add(fetchedQuote)
             } catch (e: Exception) {
                 Log.e("ERROR", "Failed to fetch quote", e)
             } finally {
@@ -152,65 +152,9 @@ private fun generatePastelColorFromQuote(quote: String): Color {
     val longValue = ByteBuffer.wrap(hash.copyOfRange(0, 8)).long
     val random = Random(longValue)
 
-    val red = (160..220).random(random)
-    val green = (160..220).random(random)
-    val blue = (160..220).random(random)
+    val red = (160..240).random(random)
+    val green = (160..240).random(random)
+    val blue = (160..240).random(random)
 
     return Color(red, green, blue)
-}
-
-private suspend fun fetchQuote(cronetEngine: CronetEngine): Quote {
-    return suspendCancellableCoroutine { continuation ->
-        val executor = Executors.newSingleThreadExecutor()
-
-        val callback = object : UrlRequest.Callback() {
-            private val responseBuffer = ByteBuffer.allocateDirect(102400) // 100 KB buffer
-            private val responseString = StringBuilder()
-
-            override fun onRedirectReceived(request: UrlRequest?, info: UrlResponseInfo?, newLocationUrl: String?) {
-                request?.followRedirect()
-            }
-
-            override fun onResponseStarted(request: UrlRequest?, info: UrlResponseInfo?) {
-                request?.read(responseBuffer)
-            }
-
-            override fun onReadCompleted(request: UrlRequest?, info: UrlResponseInfo?, byteBuffer: ByteBuffer?) {
-                byteBuffer?.flip()
-                val bytes = ByteArray(byteBuffer!!.remaining())
-                byteBuffer.get(bytes)
-                responseString.append(String(bytes))
-                byteBuffer.clear()
-                request?.read(byteBuffer)
-            }
-
-            override fun onSucceeded(request: UrlRequest?, info: UrlResponseInfo?) {
-                try {
-                    val json = responseString.toString()
-                    val jsonObject = org.json.JSONObject(json).getJSONObject("quote")
-                    val quote = Quote(
-                        jsonObject.getString("content"),
-                        jsonObject.getJSONObject("author").getString("name")
-                    )
-                    continuation.resume(quote)
-                } catch (e: Exception) {
-                    Log.e("Cronet", "JSON Parsing Error", e)
-                    continuation.resumeWithException(e)
-                }
-            }
-
-            override fun onFailed(request: UrlRequest?, info: UrlResponseInfo?, error: CronetException?) {
-                Log.e("Cronet", "Request Failed", error)
-                continuation.resumeWithException(error ?: Exception("Unknown error"))
-            }
-        }
-
-        val request = cronetEngine.newUrlRequestBuilder(
-            "https://api.quotable.kurokeita.dev/api/quotes/random?maxLength=50",
-            callback,
-            executor
-        ).build()
-
-        request.start()
-    }
 }
