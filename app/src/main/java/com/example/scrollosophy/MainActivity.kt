@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
         finish()
     }
 
-    private fun startNotificationScheduler () {
+    private fun startNotificationScheduler() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {

@@ -28,14 +28,14 @@ object NotificationScheduler {
             .setConstraints(
                 Constraints.Builder()
                     .setRequiresBatteryNotLow(true)
-                    .build()
+                    .build(),
             )
             .build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             "daily_notification",
             ExistingPeriodicWorkPolicy.REPLACE,
-            workRequest
+            workRequest,
         )
     }
 }
