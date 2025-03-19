@@ -5,14 +5,30 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +44,7 @@ import org.chromium.net.CronetException
 import org.chromium.net.UrlRequest
 import org.chromium.net.UrlResponseInfo
 import java.nio.ByteBuffer
+import java.security.MessageDigest
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -56,8 +73,6 @@ fun QuoteScreen(quote: String, author: String, cronetEngine: CronetEngine) {
 
     var isLoading by remember { mutableStateOf(false) }
 
-    val pastelColor = remember { generatePastelColor() } // Generate once per recomposition
-
     LaunchedEffect(listState.firstVisibleItemIndex) {
         if (listState.firstVisibleItemIndex == quotes.size - 1 && !isLoading) {
             isLoading = true
@@ -75,10 +90,11 @@ fun QuoteScreen(quote: String, author: String, cronetEngine: CronetEngine) {
     LazyColumn (
         state = listState,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     ) {
         itemsIndexed(quotes) { index, quote ->
-            val pastelColor = generatePastelColor()
+            val pastelColor = generatePastelColorFromQuote(quote.content)
 
             Box(
                 modifier = Modifier
@@ -129,8 +145,13 @@ fun QuoteItem(quote: Quote) {
     }
 }
 
-private fun generatePastelColor(): Color {
-    val random = Random(System.currentTimeMillis())
+// ChatGPT
+private fun generatePastelColorFromQuote(quote: String): Color {
+    val hash = MessageDigest.getInstance("SHA-256").digest(quote.toByteArray())
+
+    val longValue = ByteBuffer.wrap(hash.copyOfRange(0, 8)).long
+    val random = Random(longValue)
+
     val red = (160..220).random(random)
     val green = (160..220).random(random)
     val blue = (160..220).random(random)
