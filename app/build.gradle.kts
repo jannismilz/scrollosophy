@@ -57,6 +57,7 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:2.3.7") // JSON support
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0") // JSON parsing
     implementation("com.google.android.gms:play-services-cronet:18.1.0")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

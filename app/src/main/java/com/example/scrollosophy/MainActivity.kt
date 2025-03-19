@@ -1,6 +1,9 @@
 package com.example.scrollosophy
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -11,9 +14,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import com.example.scrollosophy.components.SplashScreen
 import com.example.scrollosophy.data.Quote
 import com.example.scrollosophy.data.QuoteRepository
+import com.example.scrollosophy.schedulers.NotificationScheduler
 
 class MainActivity : ComponentActivity() {
     private lateinit var quoteRepository: QuoteRepository
@@ -23,6 +28,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         quoteRepository = QuoteRepository(applicationContext)
+
+        startNotificationScheduler()
 
         setContent {
             var showSplash by remember { mutableStateOf(true) }
@@ -53,5 +60,15 @@ class MainActivity : ComponentActivity() {
             },
         )
         finish()
+    }
+
+    private fun startNotificationScheduler () {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        NotificationScheduler.scheduleDailyNotification(this)
     }
 }
