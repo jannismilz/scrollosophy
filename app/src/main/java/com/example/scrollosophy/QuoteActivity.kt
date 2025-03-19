@@ -100,7 +100,6 @@ fun QuoteScreen(quote: String, author: String, quoteRepository: QuoteRepository)
                 modifier = Modifier
                     .fillParentMaxSize()
                     .background(pastelColor)
-                    .padding(16.dp)
             ) {
                 QuoteItem(quote)
             }
@@ -140,7 +139,7 @@ fun QuoteItem(quote: Quote) {
             imageVector = Icons.Outlined.ArrowDropDown,
             contentDescription = "Scroll to Next Icon",
             tint = Color.White,
-            modifier = Modifier.size(64.dp).height(64.dp)
+            modifier = Modifier.size(56.dp)
         )
     }
 }
