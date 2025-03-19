@@ -50,20 +50,17 @@ fun QuoteScreen(
 
     LazyColumn(
         state = listState,
-        modifier =
-            Modifier
-                .fillMaxSize(),
-        flingBehavior =
-            rememberSnapFlingBehavior(lazyListState = listState),
+        modifier = Modifier
+            .fillMaxSize(),
+        flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
     ) {
         itemsIndexed(quotes) { index, quote ->
             val pastelColor = generatePastelColorFromQuote(quote.content)
 
             Box(
-                modifier =
-                    Modifier
-                        .fillParentMaxSize()
-                        .background(pastelColor),
+                modifier = Modifier
+                    .fillParentMaxSize()
+                    .background(pastelColor),
             ) {
                 QuoteItem(quote)
             }

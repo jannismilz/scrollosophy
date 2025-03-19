@@ -22,10 +22,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SplashScreen() {
     Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Color(0xFF8ED67C)),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF8ED67C)),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
