@@ -1,4 +1,4 @@
-# indicate this is the root of the project
+# Author: https://github.com/knivram/BluetoothChat/blob/main/.editorconfig
 root = true
 
 [*]
