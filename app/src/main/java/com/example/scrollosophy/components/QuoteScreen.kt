@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.scrollosophy.QuoteItem
 import com.example.scrollosophy.data.Quote
 import com.example.scrollosophy.data.QuoteRepository
 import java.nio.ByteBuffer
