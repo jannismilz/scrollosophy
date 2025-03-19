@@ -140,12 +140,6 @@ data class Quote(val content: String, val author: String)
 
 @Composable
 fun SplashScreen() {
-    val alpha = remember { Animatable(0f) }
-
-    LaunchedEffect(Unit) {
-        alpha.animateTo(1f, animationSpec = tween(durationMillis = 1000))
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -156,7 +150,7 @@ fun SplashScreen() {
             Icon(
                 imageVector = Icons.Outlined.Lightbulb,
                 contentDescription = "Icon",
-                tint = Color.White.copy(alpha = alpha.value),
+                tint = Color.White,
                 modifier = Modifier.size(80.dp)
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -164,7 +158,7 @@ fun SplashScreen() {
                 text = "Scrollosophy",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White.copy(alpha = alpha.value)
+                color = Color.White
             )
         }
     }
