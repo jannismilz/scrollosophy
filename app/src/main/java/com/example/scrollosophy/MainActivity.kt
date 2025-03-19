@@ -46,10 +46,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun navigateToQuoteScreen(quote: Quote) {
-        startActivity(Intent(this@MainActivity, QuoteActivity::class.java).apply {
-            putExtra("quote", quote.content)
-            putExtra("author", quote.author)
-        })
+        startActivity(
+            Intent(this@MainActivity, QuoteActivity::class.java).apply {
+                putExtra("quote", quote.content)
+                putExtra("author", quote.author)
+            },
+        )
         finish()
     }
 }

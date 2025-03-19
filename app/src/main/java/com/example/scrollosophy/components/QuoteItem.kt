@@ -29,7 +29,7 @@ fun QuoteItem(quote: Quote) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(16.dp).fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(text = "")
         Column(
@@ -42,21 +42,21 @@ fun QuoteItem(quote: Quote) {
                 fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "~ ${quote.author}",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Light,
-                fontStyle = FontStyle.Italic
+                fontStyle = FontStyle.Italic,
             )
         }
         Icon(
             imageVector = Icons.Outlined.ArrowDropDown,
             contentDescription = "Scroll to Next Icon",
             tint = Color.White,
-            modifier = Modifier.size(56.dp)
+            modifier = Modifier.size(56.dp),
         )
     }
 }

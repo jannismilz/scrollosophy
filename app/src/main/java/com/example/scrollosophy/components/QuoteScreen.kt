@@ -24,7 +24,11 @@ import java.security.MessageDigest
 import kotlin.random.Random
 
 @Composable
-fun QuoteScreen(quote: String, author: String, quoteRepository: QuoteRepository) {
+fun QuoteScreen(
+    quote: String,
+    author: String,
+    quoteRepository: QuoteRepository,
+) {
     val quotes = remember { mutableStateListOf(Quote(quote, author)) }
     val listState = rememberLazyListState()
 
@@ -44,19 +48,22 @@ fun QuoteScreen(quote: String, author: String, quoteRepository: QuoteRepository)
         }
     }
 
-    LazyColumn (
+    LazyColumn(
         state = listState,
-        modifier = Modifier
-            .fillMaxSize(),
-        flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+        modifier =
+            Modifier
+                .fillMaxSize(),
+        flingBehavior =
+            rememberSnapFlingBehavior(lazyListState = listState),
     ) {
         itemsIndexed(quotes) { index, quote ->
             val pastelColor = generatePastelColorFromQuote(quote.content)
 
             Box(
-                modifier = Modifier
-                    .fillParentMaxSize()
-                    .background(pastelColor)
+                modifier =
+                    Modifier
+                        .fillParentMaxSize()
+                        .background(pastelColor),
             ) {
                 QuoteItem(quote)
             }

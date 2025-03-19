@@ -22,24 +22,25 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SplashScreen() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF8ED67C)),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFF8ED67C)),
+        contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 imageVector = Icons.Outlined.Lightbulb,
                 contentDescription = "Icon",
                 tint = Color.White,
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(80.dp),
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Scrollosophy",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.White,
             )
         }
     }
