@@ -80,11 +80,12 @@ class QuoteRepository(context: Context) {
                     ) {}
                 }
 
-            val request = cronetEngine.newUrlRequestBuilder(
-                "https://api.quotable.kurokeita.dev/api/quotes/random?maxLength=50",
-                callback,
-                executor,
-            ).build()
+            val request =
+                cronetEngine.newUrlRequestBuilder(
+                    "https://api.quotable.kurokeita.dev/api/quotes/random?maxLength=50",
+                    callback,
+                    executor,
+                ).build()
 
             request.start()
         }
