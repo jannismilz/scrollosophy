@@ -38,16 +38,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.suspendCancellableCoroutine
-import org.chromium.net.CronetEngine
-import org.chromium.net.CronetException
-import org.chromium.net.UrlRequest
-import org.chromium.net.UrlResponseInfo
+import com.example.scrollosophy.components.QuoteScreen
+import com.example.scrollosophy.data.Quote
+import com.example.scrollosophy.data.QuoteRepository
 import java.nio.ByteBuffer
 import java.security.MessageDigest
-import java.util.concurrent.Executors
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.random.Random
 
 class QuoteActivity : ComponentActivity() {
@@ -56,7 +51,7 @@ class QuoteActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val quote = intent.getStringExtra("quote") ?: "No quote available"
-        val author = intent.getStringExtra("author") ?: "Unknown"
+        val author = intent.getStringExtra("author") ?: "Sorry"
 
         quoteRepository = QuoteRepository(applicationContext)
 
@@ -66,94 +61,4 @@ class QuoteActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun QuoteScreen(quote: String, author: String, quoteRepository: QuoteRepository) {
-    val quotes = remember { mutableStateListOf(Quote(quote, author)) }
-    val listState = rememberLazyListState()
 
-    var isLoading by remember { mutableStateOf(false) }
-
-    LaunchedEffect(listState.firstVisibleItemIndex) {
-        if (listState.firstVisibleItemIndex == quotes.size - 1 && !isLoading) {
-            isLoading = true
-            try {
-                val fetchedQuote = quoteRepository.fetchQuote()
-                quotes.add(fetchedQuote)
-            } catch (e: Exception) {
-                Log.e("ERROR", "Failed to fetch quote", e)
-            } finally {
-                isLoading = false
-            }
-        }
-    }
-
-    LazyColumn (
-        state = listState,
-        modifier = Modifier
-            .fillMaxSize(),
-        flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-    ) {
-        itemsIndexed(quotes) { index, quote ->
-            val pastelColor = generatePastelColorFromQuote(quote.content)
-
-            Box(
-                modifier = Modifier
-                    .fillParentMaxSize()
-                    .background(pastelColor)
-            ) {
-                QuoteItem(quote)
-            }
-        }
-    }
-}
-
-@Composable
-fun QuoteItem(quote: Quote) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(16.dp).fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(text = "")
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = "\"${quote.content}\"",
-                fontSize = 24.sp,
-                fontStyle = FontStyle.Italic,
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "~ ${quote.author}",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-                fontStyle = FontStyle.Italic
-            )
-        }
-        Icon(
-            imageVector = Icons.Outlined.ArrowDropDown,
-            contentDescription = "Scroll to Next Icon",
-            tint = Color.White,
-            modifier = Modifier.size(56.dp)
-        )
-    }
-}
-
-// ChatGPT
-private fun generatePastelColorFromQuote(quote: String): Color {
-    val hash = MessageDigest.getInstance("SHA-256").digest(quote.toByteArray())
-
-    val longValue = ByteBuffer.wrap(hash.copyOfRange(0, 8)).long
-    val random = Random(longValue)
-
-    val red = (160..240).random(random)
-    val green = (160..240).random(random)
-    val blue = (160..240).random(random)
-
-    return Color(red, green, blue)
-}

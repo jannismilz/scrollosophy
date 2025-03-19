@@ -1,4 +1,4 @@
-package com.example.scrollosophy
+package com.example.scrollosophy.data
 
 import android.content.Context
 import android.util.Log
