@@ -29,7 +29,7 @@ class NotificationWorker(context: Context, params: WorkerParameters) : Worker(co
             return
         }
 
-        // Create Notification Channel (Only needed for Android 8.0+)
+        // Notification Channel erstellen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
