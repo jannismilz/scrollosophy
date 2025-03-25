@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
     private fun navigateToQuoteScreen(quote: Quote) {
         startActivity(
-            Intent(this@MainActivity, QuoteActivity::class.java).apply {
+            Intent(this, QuoteActivity::class.java).apply {
                 putExtra("quote", quote.content)
                 putExtra("author", quote.author)
             },
@@ -63,9 +63,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startNotificationScheduler() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             return
         }
 
