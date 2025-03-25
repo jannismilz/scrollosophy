@@ -17,6 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.example.scrollosophy.data.Quote
 import com.example.scrollosophy.data.QuoteRepository
 import java.nio.ByteBuffer
@@ -32,10 +34,15 @@ fun QuoteScreen(
     val quotes = remember { mutableStateListOf(Quote(quote, author)) }
     val listState = rememberLazyListState()
 
+    val haptic = LocalHapticFeedback.current
+    var lastScrolledIndex by remember { mutableStateOf(0) }
+
     var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(listState.firstVisibleItemIndex) {
-        if (listState.firstVisibleItemIndex == quotes.size - 1 && !isLoading) {
+        val currentItem = listState.firstVisibleItemIndex
+
+        if (currentItem == quotes.size - 1 && !isLoading) {
             isLoading = true
             try {
                 val fetchedQuote = quoteRepository.fetchQuote()
@@ -45,6 +52,11 @@ fun QuoteScreen(
             } finally {
                 isLoading = false
             }
+        }
+
+        if (currentItem != lastScrolledIndex) {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            lastScrolledIndex = currentItem
         }
     }
 
