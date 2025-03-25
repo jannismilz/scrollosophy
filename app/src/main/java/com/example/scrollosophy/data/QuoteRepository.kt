@@ -18,12 +18,12 @@ class QuoteRepository(context: Context) {
     suspend fun fetchQuote(): Quote {
         return suspendCancellableCoroutine { continuation ->
             val executor = Executors.newSingleThreadExecutor()
+            // ChatGPT
             val callback =
                 object : UrlRequest.Callback() {
                     private val responseBuffer = ByteBuffer.allocateDirect(102400) // 100 KB buffer
                     private val responseString = StringBuilder()
 
-                    // ChatGPT
                     override fun onResponseStarted(
                         request: UrlRequest?,
                         info: UrlResponseInfo?,
@@ -31,7 +31,6 @@ class QuoteRepository(context: Context) {
                         request?.read(responseBuffer)
                     }
 
-                    // ChatGPT
                     override fun onReadCompleted(
                         request: UrlRequest?,
                         info: UrlResponseInfo?,
